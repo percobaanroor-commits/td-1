@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Belajar Bareng Adam</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #007BFF;
+      color: white;
+      margin: 0;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .container {
+      display: none;
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .active {
+      display: block;
+    }
+
+    h2 {
+      font-size: 20px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      background: white;
+      color: #007BFF;
+      border: none;
+      padding: 12px 20px;
+      margin: 8px 0;
+      font-size: 18px;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      max-width: 400px;
+    }
+
+    .btn:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .btn.selected {
+      background: #28a745;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div id="start" class="container active">
+    <h2 style="font-size: 24px;">📘 Belajar Bareng Adam</h2>
+    <button class="btn" onclick="mulai()">Mulai ➝</button>
+  </div>
+
+  <div id="quiz" class="container">
+    <h2 id="question"></h2>
+    <div id="options"></div>
+    <button class="btn" id="prevBtn" onclick="prevQuestion()">⬅ Balik</button>
+    <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>Lanjut ➝</button>
+  </div>
+
+  <div id="result" class="container">
+    <h2>✅ Selesai!</h2>
+    <p id="score"></p>
+    <p>Jika sudah selesai screenshot bagian ini dan kirim ke wa adam untuk dokumentasi</p>
+  </div>
+
+  <script>
+    const questions = [
+      { q: "1. Ibukota Indonesia adalah ...", options: ["Jakarta", "Bandung", "Surabaya"], answer: 0 },
+      { q: "2. Warna bendera Indonesia adalah ...", options: ["Merah Putih", "Merah Kuning", "Putih Biru"], answer: 0 },
+      { q: "3. Pancasila memiliki berapa sila?", options: ["5", "4", "7"], answer: 0 },
+      { q: "4. Gunung tertinggi di Indonesia adalah ...", options: ["Semeru", "Jayawijaya", "Merapi"], answer: 1 },
+      { q: "5. Presiden pertama Indonesia adalah ...", options: ["Soekarno", "Soeharto", "Habibie"], answer: 0 },
+      { q: "6. Lagu kebangsaan Indonesia adalah ...", options: ["Indonesia Raya", "Garuda Pancasila", "Tanah Airku"], answer: 0 },
+      { q: "7. Proklamasi kemerdekaan Indonesia tahun ...", options: ["1945", "1950", "1949"], answer: 0 },
+      { q: "8. Pulau terbesar di Indonesia adalah ...", options: ["Kalimantan", "Sumatra", "Papua"], answer: 0 },
+      { q: "9. Semboyan negara Indonesia adalah ...", options: ["Bhinneka Tunggal Ika", "Merdeka", "Gotong Royong"], answer: 0 },
+      { q: "10. Bahasa resmi Indonesia adalah ...", options: ["Bahasa Indonesia", "Bahasa Jawa", "Bahasa Sunda"], answer: 0 },
+      { q: "11. Hari Kemerdekaan Indonesia diperingati setiap ...", options: ["17 Agustus", "1 Juni", "20 Mei"], answer: 0 },
+      { q: "12. Burung Garuda melambangkan ...", options: ["Lambang Negara", "Pahlawan", "Bendera"], answer: 0 },
+      { q: "13. Sila pertama Pancasila adalah ...", options: ["Ketuhanan Yang Maha Esa", "Kemanusiaan Adil", "Persatuan Indonesia"], answer: 0 },
+      { q: "14. Monas terletak di kota ...", options: ["Jakarta", "Bandung", "Medan"], answer: 0 },
+      { q: "15. Lambang pramuka adalah ...", options: ["Tunas Kelapa", "Bambu Runcing", "Garuda"], answer: 0 },
+      { q: "16. Pahlawan Diponegoro berasal dari ...", options: ["Yogyakarta", "Bali", "Aceh"], answer: 0 },
+      { q: "17. Danau terbesar di Indonesia adalah ...", options: ["Toba", "Maninjau", "Singkarak"], answer: 0 },
+      { q: "18. Suku asli Papua adalah ...", options: ["Asmat", "Dayak", "Batak"], answer: 0 },
+      { q: "19. Candi Borobudur terletak di ...", options: ["Magelang", "Solo", "Bali"], answer: 0 },
+      { q: "20. Lagu 'Indonesia Raya' diciptakan oleh ...", options: ["W.R. Supratman", "Ismail Marzuki", "Ibu Sud"], answer: 0 }
+    ];
+
+    let currentQuestion = 0;
+    let answers = [];
+
+    function mulai() {
+      document.getElementById("start").classList.remove("active");
+      document.getElementById("quiz").classList.add("active");
+      loadQuestion();
+    }
+
+    function loadQuestion() {
+      const q = questions[currentQuestion];
+      document.getElementById("question").innerText = q.q;
+
+      const optionsDiv = document.getElementById("options");
+      optionsDiv.innerHTML = "";
+
+      q.options.forEach((opt, index) => {
+        const btn = document.createElement("button");
+        btn.className = "btn";
+        btn.innerText = opt;
+
+        if (answers[currentQuestion] === index) {
+          btn.classList.add("selected");
+        }
+
+        btn.onclick = () => {
+          answers[currentQuestion] = index;
+          loadQuestion();
+          document.getElementById("nextBtn").disabled = false;
+        };
+
+        optionsDiv.appendChild(btn);
+      });
+
+      document.getElementById("prevBtn").style.display = currentQuestion > 0 ? "inline-block" : "none";
+      document.getElementById("nextBtn").innerText = currentQuestion === questions.length - 1 ? "Selesai ✅" : "Lanjut ➝";
+      document.getElementById("nextBtn").disabled = answers[currentQuestion] === undefined;
+    }
+
+    function nextQuestion() {
+      if (answers[currentQuestion] === undefined) return;
+
+      if (currentQuestion < questions.length - 1) {
+        currentQuestion++;
+        loadQuestion();
+      } else {
+        selesai();
+      }
+    }
+
+    function prevQuestion() {
+      if (currentQuestion > 0) {
+        currentQuestion--;
+        loadQuestion();
+      }
+    }
+
+    function selesai() {
+      let benar = 0;
+      questions.forEach((q, i) => {
+        if (answers[i] === q.answer) benar++;
+      });
+      let salah = questions.length - benar;
+
+      document.getElementById("quiz").classList.remove("active");
+      document.getElementById("result").classList.add("active");
+      document.getElementById("score").innerText = `Benar: ${benar} | Salah: ${salah}`;
+    }
+  </script>
+</body>
+</html>
